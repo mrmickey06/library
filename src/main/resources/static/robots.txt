@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://success-point-library.onrender.com/sitemap.xml
+Sitemap: https://library-w5qq.onrender.com/sitemap.xml
