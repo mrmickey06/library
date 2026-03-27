@@ -3,14 +3,17 @@ package com.successpoint.library.service;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -24,33 +27,21 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.successpoint.library.entity.Student;
 
-import jakarta.mail.internet.MimeMessage;
-
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${brevo.api.key}")
+    private String apiKey;
 
-    @Value("${spring.mail.username}")
+    @Value("${brevo.sender.email}")
     private String senderEmail;
+
+    private final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
     @Async
     public void sendInvoiceEmail(Student student) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            
-            helper.setFrom(senderEmail);
-            helper.setTo(student.getEmail());
-            helper.setSubject("Official Membership Receipt - Success Point Library");
-            
-            String textContent = "Dear " + student.getName() + ",\n\n"
-                    + "Thank you for being a part of Success Point Library. We are committed to providing you with the best environment for your studies.\n\n"
-                    + "We wish you a very bright and successful future ahead!\n\n"
-                    + "Best Regards,\nSuccess Point Administration";
-            helper.setText(textContent);
-
+            // 1. GENERATE PDF (Unchanged)
             ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
             Document document = new Document(PageSize.A4, 40, 40, 40, 40);
             PdfWriter.getInstance(document, pdfStream);
@@ -59,7 +50,7 @@ public class EmailService {
 
             // --- COLOR PALETTE ---
             Color indigoBrand = new Color(79, 70, 229);
-            Color inkBlueStamp = new Color(28, 58, 148); // Classic Ink Stamp Blue
+            Color inkBlueStamp = new Color(28, 58, 148); 
             Color lightGray = new Color(243, 244, 246);
 
             // --- FONTS ---
@@ -109,7 +100,7 @@ public class EmailService {
             stampCell.setBorderColor(inkBlueStamp);
             stampCell.setBorderWidth(2.5f);
             stampCell.setPadding(10f);
-            stampCell.setBackgroundColor(new Color(240, 244, 255)); // Very light blue tint
+            stampCell.setBackgroundColor(new Color(240, 244, 255)); 
             
             Paragraph s1 = new Paragraph("SUCCESS POINT", stampFontSmall);
             s1.setAlignment(Element.ALIGN_CENTER);
@@ -132,14 +123,46 @@ public class EmailService {
 
             document.close();
 
-            // 5. ATTACH AND SEND
-            ByteArrayResource pdfAttachment = new ByteArrayResource(pdfStream.toByteArray());
-            helper.addAttachment("Receipt_" + student.getName().replace(" ", "_") + ".pdf", pdfAttachment);
+            // ==========================================
+            // 5. BREVO API LOGIC (Replaces JavaMailSender)
+            // ==========================================
+            
+            // Convert PDF to Base64 String
+            byte[] pdfBytes = pdfStream.toByteArray();
+            String base64Pdf = Base64.getEncoder().encodeToString(pdfBytes);
+            String fileName = "Receipt_" + student.getName().replace(" ", "_") + ".pdf";
 
-            mailSender.send(message);
-            System.out.println("Professional Stamp PDF sent to " + student.getEmail());
+            String textContent = "Dear " + student.getName() + ",\n\n"
+                    + "Thank you for being a part of Success Point Library. We are committed to providing you with the best environment for your studies.\n\n"
+                    + "We wish you a very bright and successful future ahead!\n\n"
+                    + "Best Regards,\nSuccess Point Administration";
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", apiKey);
+
+            // Build the JSON Payload
+            Map<String, Object> body = Map.of(
+                "sender", Map.of("name", "Success Point Library", "email", senderEmail),
+                "to", List.of(Map.of("email", student.getEmail())),
+                "subject", "Official Membership Receipt - Success Point Library",
+                "textContent", textContent,
+                "attachment", List.of(
+                    Map.of(
+                        "content", base64Pdf,
+                        "name", fileName
+                    )
+                )
+            );
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+            restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+            System.out.println("Professional Stamp PDF sent successfully to " + student.getEmail());
 
         } catch (Exception e) {
+            System.err.println("Failed to send email: " + e.getMessage());
             e.printStackTrace();
         }
     }
