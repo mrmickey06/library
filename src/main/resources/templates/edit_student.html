@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Edit Details | Success Point</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 0; touch-action: manipulation; }
+        .edit-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 700; font-size: 0.8rem; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control { border: 2px solid #f1f5f9; border-radius: 12px; padding: 12px; font-weight: 600; background: #f8fafc; }
+        .form-control:focus { border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); background: white; }
+        .btn-update { background: #10b981; border: none; color: white; border-radius: 12px; padding: 15px; font-weight: 800; width: 100%; transition: 0.3s; margin-top: 20px; }
+        .btn-update:hover { background: #059669; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <div class="edit-card">
+                    <h3 class="fw-800 mb-1">Update Member</h3>
+                    <p class="text-muted small mb-4">Modifying Student ID: <span th:text="${student.id}" class="fw-bold"></span></p>
+                    
+                    <form th:action="@{/admin/update-student/{id}(id=${student.id})}" th:object="${student}" method="POST">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" th:field="*{name}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" class="form-control" th:field="*{mobileNumber}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" th:field="*{email}" required>
+                        </div>
+
+                        <div class="alert alert-info small mb-3" style="border-radius: 12px;">
+                            <i class="bi bi-info-circle"></i> To renew fees or extend membership, use the <strong>RENEW</strong> option from the Dues page.
+                        </div>
+
+                        <button type="submit" class="btn btn-update">SAVE CHANGES</button>
+                        <a href="/admin/dashboard" class="d-block text-center mt-3 text-secondary text-decoration-none fw-bold small">CANCEL</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

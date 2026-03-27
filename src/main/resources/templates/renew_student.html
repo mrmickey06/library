@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Renew Membership | Success Point</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 0; touch-action: manipulation; }
+        .renew-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 700; font-size: 0.8rem; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control { border: 2px solid #f1f5f9; border-radius: 12px; padding: 12px; font-weight: 600; background: #f8fafc; }
+        .form-control:focus { border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); background: white; }
+        .btn-renew { background: #10b981; border: none; color: white; border-radius: 12px; padding: 15px; font-weight: 800; width: 100%; transition: 0.3s; margin-top: 20px; }
+        .btn-renew:hover { background: #059669; transform: translateY(-2px); }
+        .info-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .info-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #d1fae5; }
+        .info-item:last-child { border-bottom: none; }
+        .info-label { color: #64748b; font-size: 0.85rem; }
+        .info-value { font-weight: 700; color: #0f172a; }
+        .history-badge { background: #dbeafe; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <div class="renew-card">
+                    <h3 class="fw-800 mb-1 text-success"><i class="bi bi-arrow-repeat"></i> Renew Membership</h3>
+                    <p class="text-muted small mb-4">Extending membership for <span th:text="${student.name}" class="fw-bold"></span></p>
+
+                    <!-- Student History Info -->
+                    <div class="info-box">
+                        <div class="info-item">
+                            <span class="info-label">Original Joining Date</span>
+                            <span class="info-value" th:text="${student.originalJoiningDate != null ? student.originalJoiningDate : student.joiningDate}">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Last Renewal Date</span>
+                            <span class="info-value" th:text="${student.lastRenewalDate != null ? student.lastRenewalDate : 'First time'}">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Times Renewed</span>
+                            <span class="history-badge" th:text="${student.renewalCount} + ' times'">0 times</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Fees Collected</span>
+                            <span class="info-value text-success" th:text="'Rs ' + ${student.totalFeesCollected}">Rs 0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Current Due Date</span>
+                            <span class="info-value text-danger" th:text="${student.dueDate}">-</span>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/admin/process-renewal/{id}(id=${student.id})}" method="POST">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Duration</label>
+                                <select class="form-select form-control" name="feesPeriodMonths" required>
+                                    <option value="1">1 Month</option>
+                                    <option value="3">3 Months</option>
+                                    <option value="6">6 Months</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Fees Amount (Rs)</label>
+                                <input type="number" class="form-control" name="feesPaid" th:value="${student.feesPaid}" required>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success small" style="border-radius: 12px;">
+                            <i class="bi bi-check-circle"></i> <strong>On renewal:</strong> Joining date will update to today, due date will be calculated, and an invoice email will be sent.
+                        </div>
+
+                        <button type="submit" class="btn btn-renew"><i class="bi bi-check2-circle"></i> CONFIRM RENEWAL</button>
+                        <a href="/admin/dues" class="d-block text-center mt-3 text-secondary text-decoration-none fw-bold small">CANCEL</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
