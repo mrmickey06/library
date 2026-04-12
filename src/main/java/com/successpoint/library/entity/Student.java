@@ -31,6 +31,8 @@ public class Student {
     private int feesPeriodMonths; // e.g., 1, 2, or 3 months
     private double feesPaid;      // Current period fees
     private LocalDate dueDate;
+    private String applicationStatus = "APPROVED";
+    private String feeStatus = "CLEAR";
 
     // As you requested, default password for all students
     private String password = "SP@123";
@@ -60,6 +62,10 @@ public class Student {
     public void setFeesPaid(double feesPaid) { this.feesPaid = feesPaid; }
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public String getApplicationStatus() { return applicationStatus; }
+    public void setApplicationStatus(String applicationStatus) { this.applicationStatus = applicationStatus; }
+    public String getFeeStatus() { return feeStatus; }
+    public void setFeeStatus(String feeStatus) { this.feeStatus = feeStatus; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 }

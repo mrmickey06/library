@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.successpoint.library.entity.Student;
 import com.successpoint.library.repository.StudentRepository;
+import com.successpoint.library.service.StudentService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -20,52 +21,70 @@ public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
 
-    // 1. Show the Student Login Page
+    @Autowired
+    private StudentService studentService;
+
     @GetMapping("/student-login")
     public String showStudentLogin() {
         return "student_login";
     }
 
-    // 2. Process the Student Login
+    @GetMapping("/student-registration")
+    public String showStudentRegistrationForm(Model model) {
+        model.addAttribute("student", new Student());
+        return "student_registration";
+    }
+
+    @PostMapping("/student-registration")
+    public String submitStudentRegistration(@org.springframework.web.bind.annotation.ModelAttribute("student") Student student,
+                                            Model model) {
+        Optional<Student> existingStudent = studentRepository.findByMobileNumber(student.getMobileNumber());
+        if (existingStudent.isPresent()) {
+            model.addAttribute("student", student);
+            model.addAttribute("error", "This mobile number is already used in the system.");
+            return "student_registration";
+        }
+
+        studentService.submitApplication(student);
+        model.addAttribute("student", new Student());
+        model.addAttribute("success", "Your registration request has been sent to the admin for approval.");
+        return "student_registration";
+    }
+
     @PostMapping("/student-login")
     public String processStudentLogin(@RequestParam("mobileNumber") String mobileNumber,
                                       @RequestParam("password") String password,
                                       HttpSession session,
                                       Model model) {
-        
         Optional<Student> studentOpt = studentRepository.findByMobileNumber(mobileNumber);
-        
-        // Check if student exists and password matches (default is SP@123)
-        if (studentOpt.isPresent() && studentOpt.get().getPassword().equals(password)) {
-            // Save student ID in session
+
+        if (studentOpt.isPresent()
+                && studentService.canStudentLogin(studentOpt.get())
+                && studentOpt.get().getPassword().equals(password)) {
             session.setAttribute("studentId", studentOpt.get().getId());
             return "redirect:/student/dashboard";
-        } else {
-            model.addAttribute("error", "Invalid Mobile Number or Password!");
-            return "student_login";
         }
+
+        model.addAttribute("error", "Only approved students can login. Please check your mobile number or wait for admin approval.");
+        return "student_login";
     }
 
-    // 3. The Blank Student Dashboard (For future features)
     @GetMapping("/student/dashboard")
     public String showStudentDashboard(HttpSession session, Model model) {
-        // Security check: Make sure a student is actually logged in
         Long studentId = (Long) session.getAttribute("studentId");
         if (studentId == null) {
             return "redirect:/student-login";
         }
-        
-        // Fetch the logged-in student's data to display their name on the blank portal
+
         Optional<Student> studentOpt = studentRepository.findById(studentId);
-        if (studentOpt.isPresent()) {
+        if (studentOpt.isPresent() && studentService.canStudentLogin(studentOpt.get())) {
             model.addAttribute("student", studentOpt.get());
-            return "student_dashboard"; // This will be our blank Thymeleaf page
+            return "student_dashboard";
         }
-        
+
         return "redirect:/student-login";
     }
 
-    // 4. Student Logout
     @GetMapping("/student-logout")
     public String studentLogout(HttpSession session) {
         session.invalidate();

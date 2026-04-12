@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dashboard - Success Point</title>
+    <meta name="robots" content="noindex, nofollow, noarchive">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -157,6 +158,18 @@
             gap: 1rem;
         }
 
+        .status-card.pending {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.28);
+        }
+
+        .status-subtext {
+            display: block;
+            font-size: 0.85rem;
+            opacity: 0.95;
+            margin-top: 2px;
+        }
+
         .status-icon {
             width: 50px;
             height: 50px;
@@ -201,6 +214,90 @@
             font-weight: 700;
             margin-left: 1rem;
             text-transform: uppercase;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 1.2rem;
+            box-shadow: var(--soft-shadow);
+            height: 100%;
+        }
+
+        .detail-label {
+            display: block;
+            font-size: 0.72rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .status-pill.clear {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-pill.pending {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .status-pill.due {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fdba74;
+        }
+
+        .discount-chart {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 1.2rem;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .discount-chart h5 {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #155e75;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .discount-chart-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #164e63;
+            padding: 3px 0;
+            border-bottom: 1px dashed #67e8f9;
+        }
+
+        .discount-chart-row:last-child {
+            border-bottom: none;
         }
 
         /* Feature Cards */
@@ -426,18 +523,87 @@
                 <i class="bi bi-book-half"></i>
             </div>
             <h1 class="welcome-title">Welcome to Your Learning Portal</h1>
-            <p class="welcome-subtitle">Your library subscription is active. Study hard and achieve your goals!</p>
+            <p class="welcome-subtitle" th:if="${student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now())}">
+                Your membership is due. Please clear your fees and contact admin.
+            </p>
+            <p class="welcome-subtitle" th:if="${student.feeStatus == 'PENDING' and (student.dueDate == null or !student.dueDate.isBefore(T(java.time.LocalDate).now()))}">
+                Your account is approved, but fee status is pending. Please clear your fees with admin.
+            </p>
+            <p class="welcome-subtitle" th:if="${student.feeStatus != 'PENDING' and (student.dueDate == null or !student.dueDate.isBefore(T(java.time.LocalDate).now()))}">
+                Your library subscription is active. Study hard and achieve your goals!
+            </p>
         </div>
 
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8 col-lg-6">
-                <div class="status-card">
+                <div class="status-card" th:classappend="${student.feeStatus == 'PENDING' or (student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now()))} ? ' pending' : ''">
                     <div class="status-icon">
-                        <i class="bi bi-check-circle-fill"></i>
+                        <i class="bi" th:classappend="${student.feeStatus == 'PENDING' or (student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now()))} ? ' bi-exclamation-triangle-fill' : ' bi-check-circle-fill'"></i>
                     </div>
-                    <span class="status-text">Your Library Membership is Active</span>
+                    <span class="status-text" th:if="${student.feeStatus != 'PENDING' and (student.dueDate == null or !student.dueDate.isBefore(T(java.time.LocalDate).now()))}">
+                        Your Library Membership is Active
+                        <span class="status-subtext">Fees cleared and access is normal.</span>
+                    </span>
+                    <span class="status-text" th:if="${student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now())}">
+                        Your Fees Are Due.
+                        <span class="status-subtext">Please contact admin and clear dues immediately.</span>
+                    </span>
+                    <span class="status-text" th:if="${student.feeStatus == 'PENDING' and (student.dueDate == null or !student.dueDate.isBefore(T(java.time.LocalDate).now()))}">
+                        Please clear your fees and contact admin.
+                        <span class="status-subtext">Your fee status is pending.</span>
+                    </span>
                 </div>
             </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Fee Status</span>
+                    <span class="status-pill" th:classappend="${student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now())} ? ' due' : (${student.feeStatus == 'PENDING'} ? ' pending' : ' clear')">
+                        <i class="bi" th:classappend="${student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now())} ? ' bi-exclamation-triangle-fill' : (${student.feeStatus == 'PENDING'} ? ' bi-exclamation-circle-fill' : ' bi-check-circle-fill')"></i>
+                        <span th:text="${student.dueDate != null and student.dueDate.isBefore(T(java.time.LocalDate).now()) ? 'DUE' : student.feeStatus}"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Last Renewal Date</span>
+                    <span class="detail-value" th:text="${student.lastRenewalDate != null ? #temporals.format(student.lastRenewalDate, 'dd MMM yyyy') : 'Not Renewed Yet'}"></span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Valid Till (Due Date)</span>
+                    <span class="detail-value" th:text="${student.dueDate != null ? #temporals.format(student.dueDate, 'dd MMM yyyy') : 'Not Available'}"></span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Original Joining</span>
+                    <span class="detail-value" th:text="${student.originalJoiningDate != null ? #temporals.format(student.originalJoiningDate, 'dd MMM yyyy') : 'Not Available'}"></span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Current Plan</span>
+                    <span class="detail-value" th:text="${student.feesPeriodMonths} + ' Month(s)'"></span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="detail-card">
+                    <span class="detail-label">Renewal Count</span>
+                    <span class="detail-value" th:text="${student.renewalCount}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="discount-chart">
+            <h5><i class="bi bi-percent me-1"></i> Membership Discount Chart</h5>
+            <div class="discount-chart-row"><span>1 Month</span><strong>No Discount</strong></div>
+            <div class="discount-chart-row"><span>2 Months</span><strong>Rs 100 Discount</strong></div>
+            <div class="discount-chart-row"><span>3 Months</span><strong>Rs 200 Discount</strong></div>
+            <div class="discount-chart-row"><span>For 4+ Months</span><strong>Rs 100 additional discount per extra month</strong></div>
         </div>
 
         <div class="row justify-content-center mt-4">

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Total Amount Report | Success Point</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --brand-primary: #6366f1;
+            --brand-dark: #0f172a;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            overflow-x: hidden;
+            background: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            touch-action: manipulation;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--brand-dark);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1050;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            padding: 12px 20px;
+            margin: 4px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border: 1px solid #c7d2fe;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #3730a3;
+        }
+
+        .report-table {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background: #f1f5f9;
+            color: #334155;
+            border: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            font-weight: 700;
+        }
+
+        .mobile-header {
+            display: none;
+            background: var(--brand-dark);
+            color: white;
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-header { display: flex; }
+            .sidebar { left: -100%; }
+            .sidebar.active { left: 0; width: 100%; }
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-header">
+        <span class="fw-bold">Success Point</span>
+        <button class="btn btn-dark" onclick="toggleSidebar()"><i class="bi bi-list fs-4"></i></button>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="p-4 text-center text-white fw-800 fs-4">SUCCESS POINT</div>
+        <nav>
+            <a href="/admin/dashboard" class="nav-link"><span><i class="bi bi-grid-fill me-2"></i> Dashboard</span></a>
+            <a href="/admin/add-student" class="nav-link"><span><i class="bi bi-person-plus-fill me-2"></i> Add Student</span></a>
+            <a href="/admin/dues" class="nav-link"><span><i class="bi bi-clock-history me-2"></i> Pending Dues</span></a>
+            <a href="/admin/applications" class="nav-link">
+                <span><i class="bi bi-file-earmark-text me-2"></i> Applications</span>
+                <span class="badge bg-warning text-dark" th:text="${applicationsCount}"></span>
+            </a>
+            <a href="/admin/pending-fees" class="nav-link">
+                <span><i class="bi bi-wallet2 me-2"></i> Pending Fees</span>
+                <span class="badge bg-danger" th:text="${pendingFeesCount}"></span>
+            </a>
+            <a href="/admin/total-amount" class="nav-link active"><span><i class="bi bi-cash-stack me-2"></i> Total Amount</span></a>
+            <a href="/admin-logout" class="nav-link text-danger mt-4"><span><i class="bi bi-box-arrow-left me-2"></i> Logout</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <h3 class="fw-800 mb-0">Monthly Earning Report</h3>
+            <form method="get" action="/admin/total-amount" class="d-flex gap-2">
+                <input type="month" name="month" class="form-control" th:value="${selectedMonth}" required>
+                <button class="btn btn-primary fw-bold" type="submit">Filter</button>
+            </form>
+        </div>
+
+        <div class="summary-card">
+            <div class="small text-muted">Total Earnings for Selected Month</div>
+            <div class="amount" th:text="'Rs ' + ${totalAmount}"></div>
+            <div class="small text-muted">Includes approved and fee-clear entries for this month.</div>
+        </div>
+
+        <div class="report-table">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                            <th>Plan</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="student : ${students}">
+                            <td class="fw-bold" th:text="${student.name}"></td>
+                            <td th:text="${student.mobileNumber}"></td>
+                            <td th:text="${student.feesPeriodMonths} + ' Month(s)'"></td>
+                            <td th:text="'Rs ' + ${student.feesPaid}"></td>
+                            <td th:text="${student.joiningDate != null ? #temporals.format(student.joiningDate, 'dd MMM yyyy') : '-'}"></td>
+                            <td>
+                                <span class="badge bg-success" th:if="${student.lastRenewalDate != null and student.joiningDate != null and student.lastRenewalDate.equals(student.joiningDate)}">Renewal</span>
+                                <span class="badge bg-primary" th:if="${student.lastRenewalDate == null or student.joiningDate == null or !student.lastRenewalDate.equals(student.joiningDate)}">Registration</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${#lists.isEmpty(students)}" class="p-5 text-center text-muted">
+                    <i class="bi bi-graph-down fs-1"></i>
+                    <p class="fw-bold mt-2 mb-0">No earnings found for this month.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

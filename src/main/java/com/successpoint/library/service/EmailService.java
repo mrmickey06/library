@@ -167,6 +167,42 @@ public class EmailService {
         }
     }
 
+    @Async
+    public void sendPendingFeesEmail(Student student) {
+        try {
+            String subject = "Fee Status Pending - Success Point Library";
+            String textContent = "Dear " + student.getName() + ",\n\n"
+                    + "Your library membership is approved, but your fee status is currently PENDING.\n"
+                    + "Submitted plan: " + student.getFeesPeriodMonths() + " month(s)\n"
+                    + "Submitted fee: INR " + student.getFeesPaid() + "\n\n"
+                    + "Please clear your fees and contact the admin office to complete payment verification.\n\n"
+                    + "Best Regards,\nSuccess Point Administration";
+
+            sendSimpleEmail(student.getEmail(), subject, textContent);
+            System.out.println("Pending fee email sent successfully to " + student.getEmail());
+        } catch (Exception e) {
+            System.err.println("Failed to send pending fee email: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void sendSimpleEmail(String toEmail, String subject, String textContent) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("api-key", apiKey);
+
+        Map<String, Object> body = Map.of(
+                "sender", Map.of("name", "Success Point Library", "email", senderEmail),
+                "to", List.of(Map.of("email", toEmail)),
+                "subject", subject,
+                "textContent", textContent
+        );
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+    }
+
     private void addColoredRow(PdfPTable table, String label, String value, Font lFont, Font vFont, Color bg) {
         PdfPCell c1 = new PdfPCell(new Phrase(label, lFont));
         c1.setBackgroundColor(bg);

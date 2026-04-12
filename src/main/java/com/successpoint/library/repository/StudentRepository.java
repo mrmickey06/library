@@ -12,11 +12,15 @@ import com.successpoint.library.entity.Student;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
     
-    // To check if a student already exists before registering
     Optional<Student> findByMobileNumber(String mobileNumber);
     
-    // We will use this later for the "Dues" tab in the Admin panel
     List<Student> findByDueDateBefore(LocalDate date);
-    // Add this to StudentRepository
+
+    List<Student> findByApplicationStatus(String applicationStatus);
+
+    List<Student> findByApplicationStatusAndFeeStatus(String applicationStatus, String feeStatus);
+
+    List<Student> findByApplicationStatusAndDueDateBefore(String applicationStatus, LocalDate date);
+
     List<Student> findByJoiningDateBetween(LocalDate startDate, LocalDate endDate);
 }

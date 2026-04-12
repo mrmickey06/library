@@ -41,8 +41,27 @@
                             <input type="email" class="form-control" th:field="*{email}" required>
                         </div>
 
+                        <div class="row g-2">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Month Plan</label>
+                                <input type="number" min="1" max="24" class="form-control" th:field="*{feesPeriodMonths}" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Fees (Rs)</label>
+                                <input type="number" min="0" step="0.01" class="form-control" th:field="*{feesPaid}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fee Status</label>
+                            <select class="form-control" th:field="*{feeStatus}">
+                                <option value="CLEAR">Clear</option>
+                                <option value="PENDING">Pending</option>
+                            </select>
+                        </div>
+
                         <div class="alert alert-info small mb-3" style="border-radius: 12px;">
-                            <i class="bi bi-info-circle"></i> To renew fees or extend membership, use the <strong>RENEW</strong> option from the Dues page.
+                            <i class="bi bi-info-circle"></i> If fees are changed, a fresh fee email is sent automatically with the corrected amount.
                         </div>
 
                         <button type="submit" class="btn btn-update">SAVE CHANGES</button>

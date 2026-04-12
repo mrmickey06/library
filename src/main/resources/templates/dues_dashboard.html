@@ -62,14 +62,14 @@
         .nav-link i { font-size: 1.25rem; margin-right: 12px; }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(225, 29, 72, 0.1);
-            color: var(--brand-red);
+            background: rgba(99, 102, 241, 0.12);
+            color: #6366f1;
         }
 
         .nav-link.active {
-            background: var(--brand-red);
+            background: #6366f1;
             color: white !important;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         /* --- MAIN CONTENT --- */
@@ -132,21 +132,48 @@
             align-items: center;
         }
 
+        .mobile-tabs {
+            display: none;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 12px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .mobile-tab {
+            white-space: nowrap;
+            text-decoration: none;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .mobile-tab.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
         @media (max-width: 992px) {
-            .sidebar { left: -100%; }
-            .sidebar.active { left: 0; width: 100%; }
+            .sidebar { display: none; }
             .main-content { margin-left: 0; padding: 1rem; }
-            .mobile-header { display: flex; }
+            .mobile-header { display: none; }
+            .mobile-tabs { display: flex; }
         }
     </style>
 </head>
 <body>
 
-    <div class="mobile-header">
-        <span class="fw-bold fs-5">Success Point</span>
-        <button class="btn btn-dark" onclick="toggleSidebar()">
-            <i class="bi bi-list fs-3"></i>
-        </button>
+    <div class="mobile-tabs">
+        <a href="/admin/dashboard" class="mobile-tab">Dashboard</a>
+        <a href="/admin/dues" class="mobile-tab active">Pending Dues</a>
+        <a href="/admin/applications" class="mobile-tab">Applications</a>
+        <a href="/admin/pending-fees" class="mobile-tab">Pending Fees</a>
+        <a href="/admin/total-amount" class="mobile-tab">Total Amount</a>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -161,6 +188,17 @@
             </a>
             <a href="/admin/dues" class="nav-link active">
                 <i class="bi bi-clock-history"></i> Pending Dues
+            </a>
+            <a href="/admin/applications" class="nav-link d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-file-earmark-text"></i> Applications</span>
+                <span class="badge bg-warning text-dark" th:text="${applicationsCount}"></span>
+            </a>
+            <a href="/admin/pending-fees" class="nav-link d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-wallet2"></i> Pending Fees</span>
+                <span class="badge bg-danger" th:text="${pendingFeesCount}"></span>
+            </a>
+            <a href="/admin/total-amount" class="nav-link">
+                <i class="bi bi-cash-stack"></i> Total Amount
             </a>
             <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#downloadModal">
                 <i class="bi bi-cloud-arrow-down-fill"></i> Export Data
@@ -238,10 +276,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-    </script>
+    <script></script>
 </body>
 </html>

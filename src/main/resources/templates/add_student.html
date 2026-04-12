@@ -123,6 +123,36 @@
         .alert-info-custom i { color: var(--brand-primary); font-size: 1rem; }
         .alert-info-custom p { margin: 0; color: #1e1b4b; font-size: 0.75rem; font-weight: 500; }
 
+        .discount-box {
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .discount-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #065f46;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
+        }
+
+        .discount-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 3px 0;
+            color: #14532d;
+            border-bottom: 1px dashed #bbf7d0;
+        }
+
+        .discount-row:last-child {
+            border-bottom: none;
+        }
+
         /* --- Professional Submit Button --- */
         .btn-submit {
             background: var(--brand-primary);
@@ -195,18 +225,29 @@
                 <div class="row g-2">
                     <div class="col-6 mb-3">
                         <label class="form-label">Duration</label>
-                        <select class="form-select" th:field="*{feesPeriodMonths}" required>
-                            <option value="1">1 Month</option>
-                            <option value="2">2 Months</option>
-                            <option value="3">3 Months</option>
-                            <option value="6">6 Months</option>
-                        </select>
+                        <input type="number" min="1" max="24" class="form-control" th:field="*{feesPeriodMonths}" placeholder="Months" required>
                     </div>
 
                     <div class="col-6 mb-3">
                         <label class="form-label">Fees (₹)</label>
                         <input type="number" class="form-control" th:field="*{feesPaid}" placeholder="0" required>
                     </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fee Status</label>
+                    <select class="form-select" name="feeStatus" required>
+                        <option value="CLEAR">Clear</option>
+                        <option value="PENDING">Pending</option>
+                    </select>
+                </div>
+
+                <div class="discount-box">
+                    <div class="discount-title">Membership Discount Chart</div>
+                    <div class="discount-row"><span>1 Month</span><strong>No Discount</strong></div>
+                    <div class="discount-row"><span>2 Months</span><strong>Rs 100 Discount</strong></div>
+                    <div class="discount-row"><span>3 Months</span><strong>Rs 200 Discount</strong></div>
+                    <div class="discount-row"><span>For 4+ Months</span><strong>Rs 100 additional discount per extra month</strong></div>
                 </div>
 
                 <button type="submit" class="btn-submit">

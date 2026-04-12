@@ -1,15 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <meta name="google-site-verification" content="JbCLH4FRo01Px6Zdncegv8af-keaGeLZWh14Tz3W97k" />
- <title>Success Point Library Bhiwani | Peaceful Study Space & Reading </title>
+<title>Success Point Library Bhiwani | Best Study Library & Reading Room</title>
 
-    <meta name="description" content="Welcome to Success Point Library in Bhiwani. We provide a peaceful, fully-equipped study environment and reading room for students to focus and achieve their goals.">
+<meta name="description" content="Success Point Library in Bhiwani offers a peaceful, disciplined and career-focused study environment with reading room, AC seating, WiFi and student registration.">
+<meta name="keywords" content="Success Point Library, Success Point Library Bhiwani, library in Bhiwani, best library in Bhiwani, reading room Bhiwani, study center Bhiwani, private sector job preparation">
+<meta name="author" content="Success Point Library">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="/">
 
-    <meta name="keywords" content="Success Point Library, Success Point Library Bhiwani, library in Bhiwani, study center Bhiwani, reading room Bhiwani, best library in Bhiwani">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Success Point Library">
+<meta property="og:title" content="Success Point Library Bhiwani | Best Study Library & Reading Room">
+<meta property="og:description" content="Join Success Point Library Bhiwani for focused study, disciplined environment, and career-ready learning.">
+<meta property="og:url" content="/">
+<meta property="og:image" content="https://i.ibb.co/842G5gJh/Screenshot-2026-04-12-142627.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Success Point Library Bhiwani">
+<meta name="twitter:description" content="Peaceful and career-focused study library in Bhiwani.">
+<meta name="twitter:image" content="https://i.ibb.co/842G5gJh/Screenshot-2026-04-12-142627.png">
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Library",
+    "name": "Success Point Library",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Agrasen Chowk, Bhiwani - Rohtak Rd, opp- to Rajput Dharamshala",
+        "addressLocality": "Bhiwani",
+        "addressRegion": "Haryana",
+        "postalCode": "127021",
+        "addressCountry": "IN"
+    },
+    "telephone": "+91-8278193422",
+    "url": "/"
+}
+</script>
 
   
 
@@ -124,6 +156,20 @@ gap:6px;
 margin-bottom:15px;
 }
 
+.contact-tag{
+background:#dcfce7;
+color:#166534;
+padding:7px 12px;
+border:1px solid #bbf7d0;
+border-radius:999px;
+font-size:13px;
+font-weight:700;
+display:inline-flex;
+align-items:center;
+gap:7px;
+margin-bottom:15px;
+}
+
 .hero-title{
 font-size:42px;
 font-weight:800;
@@ -142,6 +188,23 @@ font-size:16px;
 color:var(--muted);
 margin-bottom:25px;
 line-height:1.6;
+}
+
+.trust-line{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:14px;
+}
+
+.trust-pill{
+background:#e0f2fe;
+color:#075985;
+border:1px solid #bae6fd;
+padding:7px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:600;
 }
 
 /* FEATURES */
@@ -211,12 +274,186 @@ background:#f1f5f9;
 border-radius:16px;
 overflow:hidden;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
+background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);
 }
 
 .hero-image-wrapper img{
 width:100%;
 height:420px;
 object-fit:cover;
+object-position:center center;
+display:block;
+transition:object-fit 0.25s ease, transform 0.25s ease;
+}
+
+.adaptive-fit.portrait-fit{
+object-fit:contain;
+background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);
+padding:12px;
+}
+
+.adaptive-fit.landscape-fit{
+object-fit:cover;
+padding:0;
+}
+
+/* GALLERY */
+
+.gallery-section{
+padding:55px 0;
+background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+border-top:1px solid #e5e7eb;
+}
+
+.gallery-title{
+font-size:30px;
+font-weight:800;
+margin-bottom:8px;
+}
+
+.gallery-subtitle{
+color:var(--muted);
+margin-bottom:24px;
+}
+
+.gallery-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:14px;
+}
+
+.gallery-card{
+background:white;
+border:1px solid #e5e7eb;
+border-radius:14px;
+overflow:hidden;
+box-shadow:0 8px 20px rgba(15,23,42,0.06);
+}
+
+.gallery-card img{
+width:100%;
+height:180px;
+object-fit:cover;
+object-position:center center;
+display:block;
+transition:object-fit 0.25s ease, transform 0.25s ease;
+}
+
+.gallery-card img.adaptive-fit.portrait-fit{
+object-fit:contain;
+background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);
+padding:10px;
+box-sizing:border-box;
+}
+
+.gallery-card img.adaptive-fit.landscape-fit{
+object-fit:cover;
+padding:0;
+}
+
+.gallery-card p{
+margin:0;
+padding:10px;
+font-size:12px;
+color:var(--muted);
+text-align:center;
+}
+
+/* PLACEMENT SECTION */
+
+.placement-section{
+padding:65px 0;
+background:linear-gradient(135deg,#0f172a 0%,#1e293b 55%,#0b3b59 100%);
+color:#e2e8f0;
+position:relative;
+overflow:hidden;
+}
+
+.placement-section::before{
+content:'';
+position:absolute;
+width:240px;
+height:240px;
+border-radius:50%;
+background:rgba(59,130,246,0.18);
+top:-80px;
+right:-80px;
+}
+
+.placement-title{
+font-size:34px;
+font-weight:800;
+line-height:1.2;
+margin-bottom:10px;
+color:white;
+}
+
+.placement-subtitle{
+color:#cbd5e1;
+max-width:700px;
+margin-bottom:18px;
+}
+
+.placement-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+}
+
+.placement-card{
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(148,163,184,0.3);
+border-radius:14px;
+padding:14px;
+backdrop-filter:blur(2px);
+}
+
+.placement-card h6{
+font-size:13px;
+font-weight:700;
+margin-bottom:6px;
+color:#93c5fd;
+}
+
+.placement-card p{
+margin:0;
+font-size:13px;
+color:#e2e8f0;
+}
+
+.placement-cta{
+margin-top:20px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.btn-place-main{
+background:#22c55e;
+color:white;
+padding:10px 18px;
+border-radius:10px;
+text-decoration:none;
+font-weight:700;
+}
+
+.btn-place-main:hover{
+background:#16a34a;
+color:white;
+}
+
+.btn-place-outline{
+border:1px solid #cbd5e1;
+color:#f8fafc;
+padding:10px 18px;
+border-radius:10px;
+text-decoration:none;
+font-weight:700;
+}
+
+.btn-place-outline:hover{
+background:rgba(255,255,255,0.12);
+color:white;
 }
 
 /* STATS */
@@ -289,6 +526,22 @@ justify-content:center;
 height:300px;
 }
 
+.gallery-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.gallery-title{
+font-size:24px;
+}
+
+.placement-grid{
+grid-template-columns:repeat(1,1fr);
+}
+
+.placement-title{
+font-size:28px;
+}
+
 }
 
 </style>
@@ -314,7 +567,7 @@ SUCCESS POINT
 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
 <div class="nav-buttons">
 
-<a class="btn-nav btn-student" href="/student-login">
+<a class="btn-nav btn-student" href="/student-registration">
 <i class="bi bi-mortarboard"></i>
 Student Portal
 </a>
@@ -341,6 +594,11 @@ Admin Portal
 Premium Study Environment
 </div>
 
+<div class="contact-tag">
+<i class="bi bi-telephone-fill"></i>
+Contact Admin: 8278193422
+</div>
+
 <h1 class="hero-title">
 Welcome to Success Point Library Bhiwani 
 Elevate Your  <br>
@@ -351,6 +609,12 @@ Elevate Your  <br>
 Success Point Library provides a focused and comfortable learning
 environment for students preparing for exams and achieving academic success.
 </p>
+
+<div class="trust-line">
+<span class="trust-pill">Focused Study Culture</span>
+<span class="trust-pill">Career-Oriented Environment</span>
+<span class="trust-pill">Disciplined Daily Routine</span>
+</div>
 
 <div class="feature-pills">
 
@@ -383,7 +647,7 @@ Study Materials
 
 <div class="cta-buttons">
 
-<a href="/student-login" class="btn-cta btn-primary-cta">
+<a href="/student-registration" class="btn-cta btn-primary-cta">
 <i class="bi bi-arrow-right-circle-fill"></i>
 Join Now
 </a>
@@ -400,11 +664,77 @@ Admin Access
 <div class="col-lg-6">
 
 <div class="hero-image-wrapper">
-<img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=2070&auto=format&fit=crop">
+<img class="adaptive-fit" src="https://lh3.googleusercontent.com/gps-cs-s/AHVAweqi9nDEWpeAIUB6p1NNwd3Lxl8stkGYsxADHo63JppJzT1xBZ4A7-O1GjsiTvt57J6kV-FBb8X-IiE3Baig_eeiEtDurj6PdfnoxeGeZ8WNw5gs4kZT2l78H-ILoaFTk_rIfhFZCJDusxHz=s1360-w1360-h1020-rw" alt="Success Point Library">
 </div>
 
 </div>
 
+</div>
+</div>
+</section>
+
+<section class="placement-section">
+<div class="container">
+
+<h2 class="placement-title">Get Placed in Private Sector Jobs</h2>
+<p class="placement-subtitle">
+Build strong consistency, communication confidence, and exam discipline in our guided study ecosystem.
+This environment helps students become job-ready for private sector opportunities.
+</p>
+
+<div class="placement-grid">
+<div class="placement-card">
+<h6><i class="bi bi-briefcase-fill me-1"></i> Job Readiness</h6>
+<p>Daily focused schedule to improve practical employability and performance.</p>
+</div>
+<div class="placement-card">
+<h6><i class="bi bi-person-workspace me-1"></i> Interview Discipline</h6>
+<p>Structured routine that builds confidence, consistency, and professional behavior.</p>
+</div>
+<div class="placement-card">
+<h6><i class="bi bi-graph-up-arrow me-1"></i> Skill Growth</h6>
+<p>Continuous study support for aptitude, reasoning, and communication improvement.</p>
+</div>
+<div class="placement-card">
+<h6><i class="bi bi-stars me-1"></i> Career Momentum</h6>
+<p>Stay motivated with a result-driven environment designed for serious aspirants.</p>
+</div>
+</div>
+
+<div class="placement-cta">
+<a href="/student-registration" class="btn-place-main"><i class="bi bi-rocket-takeoff-fill me-1"></i> Start Your Journey</a>
+<a href="/student-login" class="btn-place-outline"><i class="bi bi-box-arrow-in-right me-1"></i> Student Login</a>
+</div>
+
+</div>
+</section>
+
+<section class="gallery-section">
+<div class="container">
+<h2 class="gallery-title">Library Photo Gallery</h2>
+<!-- <p class="gallery-subtitle">Sample photos added below. You can replace these with your own library images anytime.</p> -->
+
+<div class="gallery-grid">
+<div class="gallery-card">
+<img class="adaptive-fit" src="https://i.ibb.co/842G5gJh/Screenshot-2026-04-12-142627.png" alt="Library photo 1">
+<!-- <p>Photo 1 (replaceable)</p> -->
+</div>
+<div class="gallery-card">
+<img class="adaptive-fit" src="https://i.ibb.co/CpQJZF2q/Screenshot-2026-04-12-142430.png" alt="Library photo 2">
+<!-- <p>Photo 2 (replaceable)</p> -->
+</div>
+<div class="gallery-card">
+<img class="adaptive-fit" src="https://lh3.googleusercontent.com/gps-cs-s/AHVAweqi9nDEWpeAIUB6p1NNwd3Lxl8stkGYsxADHo63JppJzT1xBZ4A7-O1GjsiTvt57J6kV-FBb8X-IiE3Baig_eeiEtDurj6PdfnoxeGeZ8WNw5gs4kZT2l78H-ILoaFTk_rIfhFZCJDusxHz=s1360-w1360-h1020-rw" alt="Library photo 3">
+<!-- <p>Photo 3 (replaceable)</p> -->
+</div>
+<div class="gallery-card">
+<img class="adaptive-fit" src="https://i.ibb.co/8LjBHpXq/Screenshot-2026-04-12-142912.png&w=1200&auto=format&fit=crop" alt="Library photo 4">
+<!-- <p>Photo 4 (replaceable)</p> -->
+</div>
+<div class="gallery-card">
+<img class="adaptive-fit" src="https://i.ibb.co/1G0jPST0/Screenshot-2026-04-12-143220.png" alt="Library photo 5">
+<!-- <p>Photo 5 (replaceable)</p> -->
+</div>
 </div>
 </div>
 </section>
@@ -442,11 +772,27 @@ Admin Access
 <footer class="footer">
 <div class="container">
 <p>© 2026 Success Point Library • Designed for Learning Excellence</p>
-<p>Visit us: Success Point Library, [ Rohtak Gate Bhiwani IN Front of Rajput Dharamshala], Bhiwani, Haryana</p>
+<p>Visit us: Agrasen Chowk, Bhiwani - Rohtak Rd, opp- to Rajput Dharamshala, Bhiwani, Haryana 127021</p>
 </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll('.adaptive-fit').forEach((img) => {
+    const applyOrientationClass = () => {
+        const portrait = img.naturalHeight > img.naturalWidth;
+        img.classList.toggle('portrait-fit', portrait);
+        img.classList.toggle('landscape-fit', !portrait);
+    };
+
+    if (img.complete && img.naturalWidth > 0) {
+        applyOrientationClass();
+    } else {
+        img.addEventListener('load', applyOrientationClass, { once: true });
+    }
+});
+</script>
 
 </body>
 </html>

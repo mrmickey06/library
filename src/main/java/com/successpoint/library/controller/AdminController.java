@@ -1,5 +1,7 @@
 package com.successpoint.library.controller;
 
+import java.time.YearMonth;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,98 +27,137 @@ public class AdminController {
     @Autowired
     private StudentService studentService;
 
-    // 1. Show the main Admin Dashboard with the list of all students
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
-        // We fetch all students and add them to the "model" so the HTML page can see them
         model.addAttribute("students", studentService.getAllStudents());
-        return "admin_dashboard"; // This tells Spring to look for admin_dashboard.html
+        model.addAttribute("applicationsCount", studentService.getPendingApplications().size());
+        model.addAttribute("pendingFeesCount", studentService.getPendingFeeStudents().size());
+        return "admin_dashboard";
     }
 
-    // 2. Show the form to add a new student
     @GetMapping("/add-student")
     public String showAddStudentForm(Model model) {
-        // We send a blank Student object to the HTML form to be filled out
         model.addAttribute("student", new Student());
-        return "add_student"; 
+        return "add_student";
     }
 
-    // 3. Save the new student and refresh the dashboard
     @PostMapping("/save-student")
-    public String saveStudent(@ModelAttribute("student") Student student) {
-        studentService.registerStudent(student);
-        // "redirect:" forces the browser to reload the dashboard page to show the new data
+    public String saveStudent(@ModelAttribute("student") Student student,
+                              @RequestParam("feeStatus") String feeStatus) {
+        studentService.registerStudent(student, feeStatus);
         return "redirect:/admin/dashboard";
     }
 
-    // 4. Show the form to edit an existing student
     @GetMapping("/edit-student/{id}")
     public String showEditStudentForm(@PathVariable Long id, Model model) {
         model.addAttribute("student", studentService.getStudentById(id));
         return "edit_student";
     }
 
-    // 5. Update the student PROFILE in the database (name, mobile, email only)
     @PostMapping("/update-student/{id}")
     public String updateStudent(@PathVariable Long id, @ModelAttribute("student") Student formStudent) {
-        Student existingStudent = studentService.getStudentById(id);
-        if (existingStudent == null) {
-            return "redirect:/admin/dashboard";
-        }
-
-        // Only update profile fields - NOT fees or dates
-        existingStudent.setName(formStudent.getName());
-        existingStudent.setMobileNumber(formStudent.getMobileNumber());
-        existingStudent.setEmail(formStudent.getEmail());
-
-        studentService.updateStudent(existingStudent);
+        studentService.updateStudentProfile(id, formStudent);
         return "redirect:/admin/dashboard";
     }
 
-    // 6. Delete a student entirely
     @GetMapping("/delete-student/{id}")
     public String deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return "redirect:/admin/dashboard";
     }
 
-    // 7. Show the Dues tab (only students whose due date has passed)
     @GetMapping("/dues")
     public String showDues(Model model) {
         model.addAttribute("students", studentService.getStudentsWithDues());
+        model.addAttribute("applicationsCount", studentService.getPendingApplications().size());
+        model.addAttribute("pendingFeesCount", studentService.getPendingFeeStudents().size());
         return "dues_dashboard";
     }
 
-    // 8. Show the RENEWAL form for a student
+    @GetMapping("/applications")
+    public String showApplications(Model model) {
+        model.addAttribute("students", studentService.getPendingApplications());
+        model.addAttribute("applicationsCount", studentService.getPendingApplications().size());
+        model.addAttribute("pendingFeesCount", studentService.getPendingFeeStudents().size());
+        return "applications_dashboard";
+    }
+
+    @GetMapping("/applications/{id}")
+    public String showApplicationReview(@PathVariable Long id, Model model) {
+        model.addAttribute("student", studentService.getStudentById(id));
+        return "review_application";
+    }
+
+    @PostMapping("/applications/{id}/approve")
+    public String approveApplication(@PathVariable Long id,
+                                     @ModelAttribute("student") Student formStudent,
+                                     @RequestParam("feeStatus") String feeStatus) {
+        studentService.approveApplication(id, formStudent, feeStatus);
+        return "redirect:/admin/applications";
+    }
+
+    @PostMapping("/applications/{id}/reject")
+    public String rejectApplication(@PathVariable Long id, @ModelAttribute("student") Student formStudent) {
+        studentService.rejectApplication(id, formStudent);
+        return "redirect:/admin/applications";
+    }
+
+    @GetMapping("/pending-fees")
+    public String showPendingFees(Model model) {
+        model.addAttribute("students", studentService.getPendingFeeStudents());
+        model.addAttribute("applicationsCount", studentService.getPendingApplications().size());
+        model.addAttribute("pendingFeesCount", studentService.getPendingFeeStudents().size());
+        return "pending_fees_dashboard";
+    }
+
+    @PostMapping("/pending-fees/{id}/clear")
+    public String clearPendingFees(@PathVariable Long id) {
+        studentService.clearPendingFees(id);
+        return "redirect:/admin/pending-fees";
+    }
+
+    @GetMapping("/total-amount")
+    public String showTotalAmount(@RequestParam(value = "month", required = false) String month,
+                                  Model model) {
+        YearMonth selectedMonth;
+        try {
+            selectedMonth = (month == null || month.isBlank()) ? YearMonth.now() : YearMonth.parse(month);
+        } catch (Exception e) {
+            selectedMonth = YearMonth.now();
+        }
+
+        model.addAttribute("selectedMonth", selectedMonth.toString());
+        model.addAttribute("students", studentService.getMonthlyEarningStudents(selectedMonth));
+        model.addAttribute("totalAmount", studentService.getMonthlyEarningsTotal(selectedMonth));
+        model.addAttribute("applicationsCount", studentService.getPendingApplications().size());
+        model.addAttribute("pendingFeesCount", studentService.getPendingFeeStudents().size());
+        return "total_amount_dashboard";
+    }
+
     @GetMapping("/renew-student/{id}")
     public String showRenewStudentForm(@PathVariable Long id, Model model) {
         model.addAttribute("student", studentService.getStudentById(id));
         return "renew_student";
     }
 
-    // 9. Process the RENEWAL - updates fees, dates, and sends invoice
     @PostMapping("/process-renewal/{id}")
     public String processRenewal(@PathVariable Long id,
-                                  @RequestParam("feesPeriodMonths") int feesPeriodMonths,
-                                  @RequestParam("feesPaid") double feesPaid) {
+                                 @RequestParam("feesPeriodMonths") int feesPeriodMonths,
+                                 @RequestParam("feesPaid") double feesPaid) {
         studentService.renewStudent(id, feesPeriodMonths, feesPaid);
         return "redirect:/admin/dues";
     }
-    // Download Excel Data between two dates
+
     @GetMapping("/download-excel")
     public org.springframework.http.ResponseEntity<org.springframework.core.io.InputStreamResource> downloadExcel(
             @RequestParam("startDate") java.time.LocalDate startDate,
             @RequestParam("endDate") java.time.LocalDate endDate) throws java.io.IOException {
-        
-        // Find students between the dates
         java.util.List<Student> students = studentRepository.findByJoiningDateBetween(startDate, endDate);
-        
-        // Generate Excel file
         java.io.ByteArrayInputStream in = excelService.generateExcel(students);
-        
+
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=SuccessPoint_Students.xlsx");
-        
+
         return org.springframework.http.ResponseEntity
                 .ok()
                 .headers(headers)
